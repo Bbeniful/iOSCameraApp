@@ -13,17 +13,11 @@ import SwiftUI
 class CameraModel: NSObject, ObservableObject, AVCapturePhotoCaptureDelegate{
     
     @Published var isTaken = false
-    
     @Published var session = AVCaptureSession()
-    
     @Published var alert = false
-    
     @Published var output = AVCapturePhotoOutput()
-    
     @Published var preview : AVCaptureVideoPreviewLayer!
-    
     @Published var isSaved = false
-    
     @Published var picData = Data(count: 0)
     
     func Check(){
@@ -59,7 +53,6 @@ class CameraModel: NSObject, ObservableObject, AVCapturePhotoCaptureDelegate{
             
             if self.session.canAddOutput(self.output){
                 self.session.addOutput(self.output)
-                
             }
             
             self.session.commitConfiguration()
@@ -67,7 +60,6 @@ class CameraModel: NSObject, ObservableObject, AVCapturePhotoCaptureDelegate{
         catch{
             print(error.localizedDescription)
         }
-        
     }
     
     func retakePicture(){

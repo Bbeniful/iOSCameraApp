@@ -24,7 +24,6 @@ struct CameraView: View {
                             .padding()
                             .background(Color.white)
                             .clipShape(/*@START_MENU_TOKEN@*/Circle()/*@END_MENU_TOKEN@*/)
-                        
                     }
                     .padding(.trailing,10)
                 }
