@@ -7,9 +7,10 @@
 
 import Foundation
 import AVFoundation
+import SwiftUI
 
 
-class CameraModel: ObservableObject{
+class CameraModel: NSObject, ObservableObject, AVCapturePhotoCaptureDelegate{
     
     @Published var isTaken = false
     
@@ -20,6 +21,10 @@ class CameraModel: ObservableObject{
     @Published var output = AVCapturePhotoOutput()
     
     @Published var preview : AVCaptureVideoPreviewLayer!
+    
+    @Published var isSaved = false
+    
+    @Published var picData = Data(count: 0)
     
     func Check(){
         switch AVCaptureDevice.authorizationStatus(for: .video){
@@ -65,4 +70,47 @@ class CameraModel: ObservableObject{
         
     }
     
+    func retakePicture(){
+        DispatchSerialQueue.global(qos: .background).async {
+            self.session.startRunning()
+            DispatchQueue.main.async {
+                withAnimation{
+                    self.isTaken.toggle()
+                }
+                self.isSaved = false
+            }
+        }
+    }
+    
+    func takePicture(){
+        DispatchQueue.global(qos: .background).async {
+            self.output.capturePhoto(with: AVCapturePhotoSettings(), delegate: self)
+            self.session.stopRunning()
+            
+            DispatchQueue.main.async {
+                withAnimation{
+                    self.isTaken.toggle()
+                }
+            }
+        }
+    }
+    
+    func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photo: AVCapturePhoto, error: Error?) {
+        if error != nil{
+            return
+        }
+        
+        print("picture has been taken")
+        
+        guard let imageData = photo.fileDataRepresentation() else {return}
+        self.picData = imageData
+    }
+    
+    func savePicture(){
+        let image = UIImage(data: self.picData)!
+        UIImageWriteToSavedPhotosAlbum(image,nil,nil,nil)
+        self.isSaved = true
+        
+        print("Image has been saved")
+    }
 }

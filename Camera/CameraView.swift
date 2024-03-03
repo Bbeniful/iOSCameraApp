@@ -18,18 +18,21 @@ struct CameraView: View {
                 .ignoresSafeArea()
             VStack{
                 if camera.isTaken{
-                    Image(systemName: "camera.on.rectangle")
-                        .foregroundColor(.black)
-                        .padding()
-                        .background(Color.white)
-                        .clipShape(/*@START_MENU_TOKEN@*/Circle()/*@END_MENU_TOKEN@*/)
-                    
+                    Button(action: camera.retakePicture){
+                        Image(systemName: "camera.on.rectangle")
+                            .foregroundColor(.black)
+                            .padding()
+                            .background(Color.white)
+                            .clipShape(/*@START_MENU_TOKEN@*/Circle()/*@END_MENU_TOKEN@*/)
+                        
+                    }
+                    .padding(.trailing,10)
                 }
                 Spacer()
                 HStack{
                     if camera.isTaken{
-                        Button(action: /*@START_MENU_TOKEN@*/{}/*@END_MENU_TOKEN@*/, label: {
-                            Text("Save")
+                        Button(action: {if !camera.isSaved{camera.savePicture()}}, label: {
+                            Text(camera.isSaved ? "Saved" :"Save")
                                 .foregroundColor(.black)
                                 .fontWeight(.semibold)
                                 .padding(.vertical,10)
@@ -41,7 +44,7 @@ struct CameraView: View {
                         Spacer()
                         
                     }else{
-                        Button(action: {camera.isTaken.toggle()}, label: {
+                        Button(action: camera.takePicture, label: {
                             ZStack{
                                 Circle()
                                     .fill(Color.white)
